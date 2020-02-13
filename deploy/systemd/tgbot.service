@@ -1,0 +1,15 @@
+[Unit]
+Description=Telegram Bot
+After=network.target
+
+[Service]
+User=terrylimax
+Group=terrylimax
+
+WorkingDirectory=/home/terrylimax/FitEasy/
+Environment="PYTHONPATH=/home/terrylimax/FitEasy/"
+ExecStart=/home/terrylimax/FitEasy/.venv/bin/gunicorn --workers 2 --bind unix:/run/tgadmin.sock wsgi: application
+Restart = on_failure
+
+[Install]
+WantedBy=multi-user.target

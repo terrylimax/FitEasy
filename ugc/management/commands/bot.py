@@ -7,6 +7,7 @@ from telegram.utils.request import Request
 from emoji import emojize
 import logging
 import random
+from projectb.settings import load_config
 
 
 from ugc.models import Profile, Vitamin, Training, Nutrition
@@ -1008,10 +1009,11 @@ class Command(BaseCommand):
             connect_timeout=3, #2
             read_timeout=3, #2.5
         )
+        config = load_config()
         bot = Bot(
             request=request,
-            token=settings.TOKEN,
-            base_url=settings.PROXY_URL,
+            token=config.TOKEN,
+            base_url=config.PROXY_URL,
         )
         print(bot.get_me())
 

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import importlib
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -122,6 +124,13 @@ STATIC_URL = '/static/'
 
 #Настройки бота
 
-TOKEN = '998191109:AAESxqYpeF77Usa3cpsiZjmXVL2p2tZWnbU'
-
-PROXY_URL = 'https://telegg.ru/orig/bot'
+def load_config():
+    conf_name = os.environ.get("TG_CONF")
+    if conf_name is None:
+        conf_name = "development"
+    try:
+        return importlib.import_module("settings.{}".format(conf_name))
+        print("Loaded config \"{}\" - OK".format(conf_name))
+    except (TypeError, ValueError, ImportError):
+        print("Invalid config \"{}\"".format(conf_name))
+        sys.exit(1)

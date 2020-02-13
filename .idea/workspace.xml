@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2979c363-b944-4356-8011-aeff325bd315" name="Default Changelist" comment="" />
+    <list default="true" id="2979c363-b944-4356-8011-aeff325bd315" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/deploy/systemd/tgbot.service" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings/development.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings/production.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectb/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectb/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ugc/management/commands/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/ugc/management/commands/bot.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,6 +90,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="518" y="222" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581591156876">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="518" y="222" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1581591156876" />
     <state x="349" y="129" key="DBNavigator.DatasetFilterDialog" timestamp="1579012063464">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
