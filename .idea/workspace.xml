@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2979c363-b944-4356-8011-aeff325bd315" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/deploy/systemd/tgadmin.service" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/tgbot.service" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/tgbot.service" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projectb/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectb/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
