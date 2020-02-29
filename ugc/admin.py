@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .forms import ProfileForm, VitaminDataForm, NutritionDataForm
-from .models import Profile, Vitamin, Training, Nutrition
+from .forms import ProfileForm, VitaminDataForm, NutritionDataForm, PaymentsDataForm
+from .models import Profile, Vitamin, Training, Nutrition, Payments
 # Register your models here.
 
 @admin.register(Profile)
@@ -26,3 +26,7 @@ class TrainingDataAdmin(admin.ModelAdmin):
 class NuritionDataAdmin(admin.ModelAdmin):
     list_display = ('id', 'profile', 'created_at', 'nutrition_goal', 'how_much', 'if_meat', 'height', 'phys_loads')
     form = NutritionDataForm
+
+@admin.register(Payments)
+class PaymentDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'profile', 'created_at', 'key_succ', 'is_activated', 'product_id')

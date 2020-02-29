@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Vitamin, Training, Nutrition
+from .models import Profile, Vitamin, Training, Nutrition, Payments
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -46,3 +46,14 @@ class NutritionDataForm(forms.ModelForm):
         widgets = {
             'phys_loads': forms.TextInput,
         }
+
+class PaymentsDataForm(forms.ModelForm):
+    class Meta:
+        model = Payments
+        fields = (
+            'id',
+            'profile',
+            'key_succ',
+            'is_activated',
+            'product_id'
+        )

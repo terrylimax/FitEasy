@@ -4,7 +4,7 @@ from django.db import models
 class Profile(models.Model):
     external_id = models.PositiveIntegerField(
         verbose_name='ID чата пользователя в Telegram',
-        unique=True,
+        unique=True
     )
     username = models.CharField(
         verbose_name='Логин пользователя',
@@ -142,3 +142,35 @@ class Nutrition(models.Model):
     class Meta:
         verbose_name = 'Данные по программам питания'
         verbose_name_plural = 'Данные по программам питания'
+
+class Payments(models.Model):
+    profile = models.ForeignKey(
+        to='ugc.Profile',
+        verbose_name='Профиль',
+        on_delete=models.PROTECT,
+    )
+    created_at = models.DateTimeField(
+        verbose_name='Время получения платежа',
+        auto_now_add=True,
+    )
+
+    key_succ = models.CharField(
+        verbose_name='Ключ',
+        max_length=200
+    )
+
+    is_activated = models.BooleanField(
+        verbose_name='Активирован',
+        default = 0
+    )
+    product_id = models.IntegerField(
+        verbose_name='Product ID',
+        max_length = 11
+    )
+
+    def __str__(self):
+        return f'{self.profile}--Payments'
+
+    class Meta:
+        verbose_name = 'Данные по плате'
+        verbose_name_plural = 'Данные по платежам'

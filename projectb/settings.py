@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '51.38.83.214',
+    '185.253.97.162',
     'localhost'
 ]
 # Application definition
@@ -78,9 +79,18 @@ WSGI_APPLICATION = 'projectb.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+   # 'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #}
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'CONN_MAX_AGE': 3600,
+        'NAME': 'FitEasy_DB',
+        'USER': 'FitEasyuser',
+        'PASSWORD': 'outlander*19',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

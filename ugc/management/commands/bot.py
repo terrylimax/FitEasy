@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from django.conf import settings
-from telegram import ParseMode
+from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Bot, Update
 from telegram.utils.request import Request
@@ -8,9 +9,13 @@ from emoji import emojize
 import logging
 import random
 from projectb.settings import load_config
+import requests
+import json
+import sys
+import time
+import uuid
 
-
-from ugc.models import Profile, Vitamin, Training, Nutrition
+from ugc.models import Profile, Vitamin, Training, Nutrition, Payments
 
 #enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -167,7 +172,10 @@ def weight_handler(update, context):
             "Отлично! Какая у тебя цель?",
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True, one_time_keyboard=True))
         return GOAL
-
+        
+        
+#def uniqid(prefix = ''):
+    #return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
 
 @log_errors
 def phys_loads_handler(update, context):
@@ -257,7 +265,43 @@ def phys_loads_handler(update, context):
                      f'{plans[0]}' \
                      f'*Твоя программа питания на второй день:* \n\n' \
                      f'{plans[1]}'
-        update.message.reply_text(text_plans, reply_markup=ReplyKeyboardRemove(),parse_mode = ParseMode.MARKDOWN,
+        
+
+        client_id = 'D39B135760893C3E1EF5F5FBA1C006CC744BE79959883217490829F70D1B9D59'
+        h = requests.post('https://money.yandex.ru/api/instance-id',  data={'client_id': client_id})
+        req = json.loads(h.text)
+       # print(req)
+        instance_id = req['instance_id']
+        account_number = '4100110996845190'
+        amount_due = 1
+        k = requests.post('https://money.yandex.ru/api/request-external-payment',  data={'pattern_id': 'p2p','instance_id': instance_id,'to': account_number,'amount_due': amount_due})
+        rek = json.loads(k.text)
+       # print(rek)
+        request_id = rek['request_id']
+        #при успешной оплате человека переносит на сервер, чтобы обработать успешную или неудачную оплату
+        key_succ = str(uuid.uuid4())
+        key_fail = str(uuid.uuid4())
+        payment = Payments(
+            profile = Profile.objects.get(external_id = update.message.chat_id),
+            key_succ = key_succ, 
+            is_activated = False,
+            product_id = 2,
+        )
+        payment.save()
+        process_payment = requests.post('https://money.yandex.ru/api/process-external-payment', data={'request_id': request_id,'instance_id': instance_id, 'ext_auth_success_uri': 'http://51.38.83.214:8081/?key='+key_succ,'ext_auth_fail_uri': 'http://51.38.83.214:8081/?key='+key_fail})
+        #сделать на питоне веб-сервер, который будет обрабатывать все запросы (с правильными портами)
+        process_payment_json = json.loads(process_payment.text)
+       # print(process_payment_json)
+        acs_params = process_payment_json['acs_params']
+        acs_url = str(process_payment_json['acs_uri']) + '?'+ 'cps_context_id=' + acs_params['cps_context_id'] + '&paymentType=' + acs_params['paymentType'] 
+       # print(acs_params)
+       # print(acs_url)
+        #Кнопка оплаты
+        keyboard = [[InlineKeyboardButton(text = "Получить программу", url=acs_url)]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        text = f'Для получения подробной программы перейди по ссылке'
+        update.message.reply_text(text, reply_markup=reply_markup,
                                   disable_web_page_preview=True)
         return ConversationHandler.END
 
@@ -759,9 +803,44 @@ def sport_lvl_handler(update, context):
     reply_text = train_advice(update, context)
     update.message.reply_text(reply_text, reply_markup=ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN,
                               disable_web_page_preview = True)
-    reply_text_program = train_program(update, context)
-    update.message.reply_text(reply_text_program, reply_markup=ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN,
-                              disable_web_page_preview = False)
+    client_id = 'D39B135760893C3E1EF5F5FBA1C006CC744BE79959883217490829F70D1B9D59'
+    h = requests.post('https://money.yandex.ru/api/instance-id',  data={'client_id': client_id})
+    req = json.loads(h.text)
+   # print(req)
+    instance_id = req['instance_id']
+    account_number = '4100110996845190'
+    amount_due = 1
+    k = requests.post('https://money.yandex.ru/api/request-external-payment',  data={'pattern_id': 'p2p','instance_id': instance_id,'to': account_number,'amount_due': amount_due})
+    rek = json.loads(k.text)
+   # print(rek)
+    request_id = rek['request_id']
+    #при успешной оплате человека переносит на сервер, чтобы обработать успешную или неудачную оплату
+    key_succ = str(uuid.uuid4())
+    key_fail = str(uuid.uuid4())
+    payment = Payments(
+        profile = Profile.objects.get(external_id = update.message.chat_id),
+        key_succ = key_succ, 
+        is_activated = False,
+        product_id = 1,
+    )
+    payment.save()
+    process_payment = requests.post('https://money.yandex.ru/api/process-external-payment', data={'request_id': request_id,'instance_id': instance_id, 'ext_auth_success_uri': 'http://51.38.83.214:8081/?key='+key_succ,'ext_auth_fail_uri': 'http://51.38.83.214:8081/?key='+key_fail})
+    #сделать на питоне веб-сервер, который будет обрабатывать все запросы (с правильными портами)
+    process_payment_json = json.loads(process_payment.text)
+   # print(process_payment_json)
+    acs_params = process_payment_json['acs_params']
+    acs_url = str(process_payment_json['acs_uri']) + '?'+ 'cps_context_id=' + acs_params['cps_context_id'] + '&paymentType=' + acs_params['paymentType'] 
+   # print(acs_params)
+   # print(acs_url)
+
+    #Кнопка оплаты
+    keyboard = [[InlineKeyboardButton(text = "Получить программу", url=acs_url)]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    text = f'Для получения подробной программы перейди по ссылке'
+    update.message.reply_text(text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN,
+                                  disable_web_page_preview=True)
+    
 
     return ConversationHandler.END
 
@@ -1006,8 +1085,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # 1 -- правильное подключение
         request = Request(
-            connect_timeout=3, #2
-            read_timeout=3, #2.5
+            connect_timeout=3000, #2
+            read_timeout=3000, #2.5
         )
         config = load_config()
         bot = Bot(
@@ -1087,5 +1166,6 @@ class Command(BaseCommand):
         updater.idle()
 
 
-
+if __name__ == '__main__':
+    Command.handle()
 
